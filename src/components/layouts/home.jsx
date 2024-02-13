@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react'
 import { Row, DatePicker, Col } from 'antd';
+import { useDispatch } from 'react-redux'
 import StatisticCardFrag from '../fragments/Statistic_card';
 import StatisticBarFrag from '../fragments/statistic_bar';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { filterDate } from '../../redux/slices/dateSlice';
 
 dayjs.extend(customParseFormat);
 
 const HomeLayout = () => {
     const { RangePicker } = DatePicker
+    const dispatch = useDispatch()
     const serializedData = localStorage.getItem("logged_user");
 
     let requestParams = {}
@@ -28,7 +31,14 @@ const HomeLayout = () => {
             requestParams.start_date =  values[0].format('YYYY-MM-DD') 
             requestParams.end_date = values[1].format('YYYY-MM-DD')
         }
+
+        dispatch(filterDate(requestParams))
     }
+
+    useEffect(() => {
+        dispatch(filterDate(requestParams))
+        // eslint-disable-next-line
+    }, [])
 
     return (
         <>

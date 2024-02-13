@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import StatisticBar from '../elements/chart/statisticbar';
+import { useSelector } from 'react-redux';
+import { getLogsByDate } from '../../api/log.service';
 
 const StatisticBarFrag = () => {
     const [statisticTaskDate, setStatisticTaskDate] = useState({})
+    const dateStatistic = useSelector((state) => state.date_statistic)
 
     let date = []
     let startedVal = []
@@ -11,6 +14,17 @@ const StatisticBarFrag = () => {
     let completedVal = []
     let unassignedVal = []    
     let notifyDriverVal = []
+
+    useEffect(() => {
+      getLogsByDate(dateStatistic, (status, result) => {
+            if (status) {
+                setStatisticTaskDate(result)
+            } else {
+                console.log(result)
+            }
+        })
+        // eslint-disable-next-line
+    }, [dateStatistic])
 
     if (statisticTaskDate.length > 0) {        
         statisticTaskDate.forEach(element => {
