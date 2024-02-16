@@ -4,78 +4,40 @@ import { useSelector } from 'react-redux';
 import { getLogsByDate } from '../../api/log.service';
 
 const StatisticBarFrag = () => {
-    const [statisticTaskDate, setStatisticTaskDate] = useState({})
+    const [statisticErrorDate, setStatisticErrorDate] = useState({})
     const dateStatistic = useSelector((state) => state.date_statistic)
 
     let date = []
-    let startedVal = []
-    let arrivedVal = []
-    let assignedVal = []
-    let completedVal = []
-    let unassignedVal = []    
-    let notifyDriverVal = []
+    let totalError = []
 
     useEffect(() => {
-      getLogsByDate(dateStatistic, (status, result) => {
-            if (status) {
-                setStatisticTaskDate(result)
-            } else {
-                console.log(result)
-            }
-        })
+      getLogsByDate(dateStatistic, (result) => {
+        setStatisticErrorDate(result)
+      })
         // eslint-disable-next-line
     }, [dateStatistic])
 
-    if (statisticTaskDate.length > 0) {        
-        statisticTaskDate.forEach(element => {
-            date.push(element.task_date);
-            startedVal.push(element.task_statuses.started)
-            arrivedVal.push(element.task_statuses.arrived)
-            assignedVal.push(element.task_statuses.assigned)
-            completedVal.push(element.task_statuses.completed)
-            unassignedVal.push(element.task_statuses.unassigned)
-            notifyDriverVal.push(element.task_statuses.notify_driver)
-        });
+    if (!statisticErrorDate) {
+      return
+    }
+
+    if (statisticErrorDate.hasOwnProperty("length")) {        
+      statisticErrorDate.forEach(element => {
+          date.push(element.log_date);
+          totalError.push(element.log_total)
+      });
     }
 
     const state = {
         labels: date,
         datasets: [
           {
-            label: 'Assigned',
-            backgroundColor: '#9ee493',
-            borderColor: '#9ee493',
+            label: 'Error',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgb(255, 99, 132)',
             borderWidth: 1,
-            data: assignedVal
-          },
-          {
-            label: 'Notify Driver',
-            backgroundColor: '#FFC8DD',
-            borderColor: '#FFC8DD',
-            borderWidth: 1,
-            data: notifyDriverVal
-          },
-          {
-            label: 'Started',
-            backgroundColor: '#e5b3fe',
-            borderColor: '#e5b3fe',
-            borderWidth: 1,
-            data: startedVal
-          },
-          {
-            label: 'Arrived',
-            backgroundColor: '#BDE0FE',
-            borderColor: '#BDE0FE',
-            borderWidth: 1,
-            data: arrivedVal
-          },
-          {
-            label: 'Completed',
-            backgroundColor: '#6fffe9',
-            borderColor: '#6fffe9',
-            borderWidth: 1,
-            data: completedVal
-          },
+            data: totalError
+          }
         ]
     }
 

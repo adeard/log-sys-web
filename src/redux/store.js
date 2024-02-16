@@ -5,10 +5,8 @@ const store = configureStore({
     reducer : {date_statistic: dateSlice}
 })
 
-// console.log("on create store : ", store.getState())
-
-// store.subscribe(() => {
-//     console.log("STORE CHANGE : ", store.getState())
-// })
+store.subscribe(() => {
+    console.log("STORE CHANGE : ", store.getState())
+})
 
 export default store

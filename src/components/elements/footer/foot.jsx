@@ -11,7 +11,7 @@ export default function Foot() {
             textAlign: 'center',
           }}
         >
-          Travis ©2023 SIMP
+          Log System ©2024 SIMP
         </Footer>
     </div>
   )

@@ -2,7 +2,6 @@ import React from 'react'
 import { HomeOutlined, CopyOutlined, CarOutlined} from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
 import { Link } from "react-router-dom";
-import logo from '/travis_logo.png'
 const { Sider } = Layout;
 
 const menu_list = [
@@ -28,7 +27,7 @@ const SidebarFrag = (props) => {
     return (
         <Sider trigger={null} collapsible collapsed={collapsed} style={{backgroundColor:"#3F5E5A"}}>
             <div className="demo-logo-vertical" />
-            <h1><img src={logo} alt='' height={"50px"} /></h1>            
+            <h4>Log System</h4>            
             <Menu
             style={{
                 color:"white",

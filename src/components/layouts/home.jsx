@@ -1,26 +1,25 @@
-import React, { useEffect } from 'react'
-import { Row, DatePicker, Col } from 'antd';
+import React, { useEffect, useState } from 'react'
+import TimeAgo from 'react-timeago';
+import { CloseCircleTwoTone } from '@ant-design/icons';
+import { Row, DatePicker, Col, List, Typography  } from 'antd';
 import { useDispatch } from 'react-redux'
-import StatisticCardFrag from '../fragments/Statistic_card';
 import StatisticBarFrag from '../fragments/statistic_bar';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { filterDate } from '../../redux/slices/dateSlice';
+import { getLogs, getTopErrorLogs } from '../../api/log.service';
 
 dayjs.extend(customParseFormat);
 
 const HomeLayout = () => {
     const { RangePicker } = DatePicker
+    const [topErrorLogs, setTopErrorLogs] = useState({})
+    const [recentlyLogs, setRecentlyLogs] = useState({})
     const dispatch = useDispatch()
-    const serializedData = localStorage.getItem("logged_user");
+    const { Paragraph } = Typography;
+    
 
     let requestParams = {}
-
-    if (serializedData) {
-        let loggedUser = JSON.parse(serializedData);
-
-        requestParams.vendor_id = loggedUser.code
-    }
 
     const handleChange = (values) => {
 
@@ -37,6 +36,15 @@ const HomeLayout = () => {
 
     useEffect(() => {
         dispatch(filterDate(requestParams))
+
+        getLogs({"order_by" : "id", "sort_by" : "desc", "limit" : 5}, (result) => {
+            setRecentlyLogs(result)
+        })
+
+        getTopErrorLogs({"limit" : 5}, (result) => {
+            console.log(result)
+            setTopErrorLogs(result)
+        })
         // eslint-disable-next-line
     }, [])
 
@@ -50,14 +58,103 @@ const HomeLayout = () => {
                 </Col>
                 <Col span={8}>
                 </Col>       
-            </Row>
-            <br />
-            <Row gutter={16}>
-                <StatisticCardFrag />
-            </Row>
+            </Row>            
             <br />
             <Row gutter={16}>                
                 <StatisticBarFrag />
+            </Row>
+            <br />
+            <Row gutter={16}>
+                <Col span={12}>
+                    {recentlyLogs.data &&
+                    <List
+                        size="small"
+                        header="Recently Error"
+                        itemLayout="horizontal"
+                        dataSource={recentlyLogs.data}
+                        renderItem={(item) => (
+                        <List.Item>
+                            <List.Item.Meta
+                            avatar={<CloseCircleTwoTone twoToneColor="red" />}
+                            title={
+                                <a href="https://ant.design">
+                                    <Paragraph ellipsis={true} style={{marginBottom : 0}}>
+                                        {item.source}
+                                    </Paragraph>
+                                </a>}
+                            description={
+                                <Paragraph 
+                                    ellipsis={true} 
+                                    style={{
+                                        marginBottom : 0, color: 'rgba(0, 0, 0, 0.45)',
+                                        fontSize: '14px',
+                                        lineHeight: 1.5714285714285714,
+                                    }}>
+                                        {item.response}
+                                </Paragraph>}
+                            />
+
+                            <div>
+                                <small>
+                                    <i>
+                                        <TimeAgo
+                                            date={item.created_at}
+                                            minPeriod={60}
+                                        />
+                                    </i>
+                                </small>   
+                            </div>
+                        </List.Item>
+                        )}
+                    />
+                    }
+                </Col>
+                <Col span={12}>                    
+                    {topErrorLogs.length > 0 &&
+                    <List
+                        size="small"
+                        header="Frequently Error"
+                        itemLayout="horizontal"
+                        dataSource={topErrorLogs}
+                        renderItem={(item) => (
+                        <List.Item>
+                            <List.Item.Meta
+                            avatar={<CloseCircleTwoTone twoToneColor="red" />}
+                            title={
+                                <a href="https://ant.design">
+                                    <Paragraph ellipsis={true} style={{marginBottom : 0}}>
+                                        {item.source}
+                                    </Paragraph>
+                                </a>}
+                            description={
+                                <Paragraph 
+                                    ellipsis={true} 
+                                    style={{
+                                        marginBottom : 0, color: 'rgba(0, 0, 0, 0.45)',
+                                        fontSize: '14px',
+                                        lineHeight: 1.5714285714285714,
+                                    }}>
+                                        {item.response}
+                                </Paragraph>}
+                            />
+
+                            <div>
+                                <small>
+                                    <i>
+                                        <TimeAgo
+                                            date={item.last_created_at}
+                                            minPeriod={60}
+                                        />
+                                        <br />
+                                        {item.log_total} error(s)
+                                    </i>
+                                </small>   
+                            </div>
+                        </List.Item>
+                        )}
+                    />
+                    }
+                </Col>
             </Row>
         </>
     )
