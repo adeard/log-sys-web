@@ -5,11 +5,16 @@ import { Provider } from 'react-redux'
 import './index.css'
 import store from './redux/store'
 import HomePage from './pages/home'
+import DetailPage from './pages/detail'
 
 const router = createBrowserRouter([
   {
     path:"/",
     element:<HomePage />
+  },
+  {
+    path:"/detail",
+    element:<DetailPage />
   }
 ])
 

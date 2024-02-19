@@ -7,19 +7,28 @@ import StatisticBarFrag from '../fragments/statistic_bar';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { filterDate } from '../../redux/slices/dateSlice';
+import { getLogId } from '../../redux/slices/logIdSlice';
 import { getLogs, getTopErrorLogs } from '../../api/log.service';
+import { useNavigate } from 'react-router-dom'
 
 dayjs.extend(customParseFormat);
 
 const HomeLayout = () => {
-    const { RangePicker } = DatePicker
+    const { Paragraph } = Typography
+    const { RangePicker } = DatePicker    
     const [topErrorLogs, setTopErrorLogs] = useState({})
     const [recentlyLogs, setRecentlyLogs] = useState({})
     const dispatch = useDispatch()
-    const { Paragraph } = Typography;
-    
+    const navigate = useNavigate();
 
     let requestParams = {}
+
+    const handleClickDetail = (e, key) => {
+        e.preventDefault()
+        dispatch(getLogId({log_id:key}))
+
+        navigate('/detail')
+    }
 
     const handleChange = (values) => {
 
@@ -42,7 +51,6 @@ const HomeLayout = () => {
         })
 
         getTopErrorLogs({"limit" : 5}, (result) => {
-            console.log(result)
             setTopErrorLogs(result)
         })
         // eslint-disable-next-line
@@ -77,7 +85,7 @@ const HomeLayout = () => {
                             <List.Item.Meta
                             avatar={<CloseCircleTwoTone twoToneColor="red" />}
                             title={
-                                <a href="https://ant.design">
+                                <a href='#' onClick={event => handleClickDetail(event, item.id)} key={item.id}>
                                     <Paragraph ellipsis={true} style={{marginBottom : 0}}>
                                         {item.source}
                                     </Paragraph>
