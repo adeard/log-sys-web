@@ -1,5 +1,5 @@
 import React from 'react'
-import { HomeOutlined, CopyOutlined, CarOutlined} from '@ant-design/icons';
+import { HomeOutlined} from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
 import { Link } from "react-router-dom";
 const { Sider } = Layout;
@@ -9,16 +9,6 @@ const menu_list = [
         label: <Link to='/'>Home</Link>,
         key: 'home',
         icon: <HomeOutlined />,
-    },
-    {
-        label: <Link to='/assignment'>Assignment</Link>,
-        key: 'assignment',
-        icon: <CopyOutlined />,
-    },
-    {
-        label: <Link to='/master'>Master</Link>,
-        key: 'master',
-        icon: <CarOutlined />,
     },
 ]
 
