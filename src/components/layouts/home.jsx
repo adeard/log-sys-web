@@ -19,7 +19,7 @@ const HomeLayout = () => {
     const [topErrorLogs, setTopErrorLogs] = useState({})
     const [recentlyLogs, setRecentlyLogs] = useState({})
     const dispatch = useDispatch()
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     let requestParams = {}
 
